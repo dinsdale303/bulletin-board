@@ -3,14 +3,17 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
-import { createMuiTheme, StylesProvider, ThemeProvider } from '@material-ui/core/styles';
+import {
+  createMuiTheme,
+  StylesProvider,
+  ThemeProvider,
+} from '@material-ui/core/styles';
 import { CssBaseline } from '@material-ui/core';
 
 import { store } from './redux/store';
 
 import { MainLayout } from './components/layout/MainLayout/MainLayout';
 import { Routes } from './components/layout/Routes/Routes';
-
 
 const theme = createMuiTheme({
   palette: {
@@ -25,7 +28,7 @@ const App = () => (
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <MainLayout>
-            <Routes/>
+            <Routes />
           </MainLayout>
         </ThemeProvider>
       </StylesProvider>
@@ -34,4 +37,3 @@ const App = () => (
 );
 
 export { App };
-

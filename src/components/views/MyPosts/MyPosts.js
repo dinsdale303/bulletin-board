@@ -4,16 +4,21 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
 import { connect } from 'react-redux';
-import { getAllPublished, fetchPublished } from '../../../redux/postsRedux';
+import { getMyPosts, fetchMyPosts } from '../../../redux/postsRedux';
+import { useAuth0 } from '@auth0/auth0-react';
 
-import styles from './Homepage.module.scss';
+import styles from './MyPosts.module.scss';
 
 import { Card } from '../../features/Card/Card';
 
-const Component = ({ className, children, posts, fetchPublishedPosts }) => {
+const Component = ({ className, children, posts, fetch }) => {
+  const {
+    user,
+  } = useAuth0();
+
   useEffect(() => {
-    fetchPublishedPosts();
-  }, [fetchPublishedPosts]);
+    fetch(user.sub.split('|')[1]);
+  }, [fetch, user]);
 
   return (
     <div className={clsx(className, styles.root)}>
@@ -28,21 +33,21 @@ Component.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   posts: PropTypes.array,
-  fetchPublishedPosts: PropTypes.func,
+  fetch: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
-  posts: getAllPublished(state),
+  posts: getMyPosts(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchPublishedPosts: () => dispatch(fetchPublished()),
+  fetch: (userId) => dispatch(fetchMyPosts(userId)),
 });
 
 const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
 
 export {
-  // Component as Homepage,
-  Container as Homepage,
-  Component as HomepageComponent,
+  // Component as MyPosts,
+  Container as MyPosts,
+  Component as MyPostsComponent,
 };

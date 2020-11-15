@@ -6,6 +6,7 @@ import clsx from 'clsx';
 
 // import { connect } from 'react-redux';
 // import { reduxSelector, reduxActionCreator } from '../../../redux/exampleRedux.js';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import styles from './MenuBtn.module.scss';
 
@@ -30,10 +31,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Component = ({ className, children, postId, user }) => {
+const Component = ({ className, children, postId }) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
+  const {
+    user,
+    // isAuthenticated,
+    // isLoading,
+  } = useAuth0();
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);

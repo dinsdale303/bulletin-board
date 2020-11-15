@@ -4,7 +4,7 @@ import { CardComponent } from './Card';
 
 describe('Component Card', () => {
   it('should render without crashing', () => {
-    const component = shallow(<CardComponent />);
+    const component = shallow(<CardComponent post = {{user: {}}} />);
     expect(component).toBeTruthy();
   });
 });

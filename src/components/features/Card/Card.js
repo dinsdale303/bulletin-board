@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 
 import clsx from 'clsx';
 
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 // import { reduxSelector, reduxActionCreator } from '../../../redux/exampleRedux.js';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import styles from './Card.module.scss';
 
@@ -52,9 +53,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Component = ({ className, children, post, user }) => {
+const Component = ({ className, children, post}) => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
+  const {
+    user,
+    isAuthenticated,
+    // isLoading,
+  } = useAuth0();
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -62,23 +68,21 @@ const Component = ({ className, children, post, user }) => {
 
   return (
     <div className={clsx(className, styles.root)}>
-      <Card key={post.id} className={classes.root}>
+      <Card key={post._id} className={classes.root}>
         <CardHeader
           avatar={
-            <Avatar aria-label="recipe" className={classes.avatar}>
-              R
-            </Avatar>
+            <Avatar aria-label="recipe" className={classes.avatar} src={post.user.avatar} />
           }
           action={
             <div className={clsx(styles.priceSettings)}>
               <Typography variant="body1">{post.price}</Typography>
-              {user === 'user' || user === 'admin' ? (
-                <MenuBtn postId={post.id} user={user}/>
+              {isAuthenticated || user === 'admin' ? (
+                <MenuBtn postId={post._id}/>
               ) : null}
             </div>
           }
           title={post.title}
-          subheader={post.publishDate}
+          subheader={post.updated}
         />
         <CardMedia className={classes.media} image={post.image} />
         <CardContent>
@@ -89,7 +93,7 @@ const Component = ({ className, children, post, user }) => {
         <CardActions disableSpacing>
           <Button
             component={Link}
-            to={'/post/' + post.id}
+            to={'/post/' + post._id}
             aria-label="add to favorites"
           >
             Go to this post
@@ -127,22 +131,21 @@ const Component = ({ className, children, post, user }) => {
 Component.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
-  user: PropTypes.string,
   post: PropTypes.object,
 };
 
-const mapStateToProps = state => ({
-  user: state.user,
-});
+// const mapStateToProps = state => ({
+//   user: state.user,
+// });
 
 // const mapDispatchToProps = dispatch => ({
 //   someAction: arg => dispatch(reduxActionCreator(arg)),
 // });
 
-const Container = connect(mapStateToProps)(Component);
+// const Container = connect(mapStateToProps)(Component);
 
 export {
-  // Component as Card,
-  Container as Card,
+  Component as Card,
+  // Container as Card,
   Component as CardComponent,
 };

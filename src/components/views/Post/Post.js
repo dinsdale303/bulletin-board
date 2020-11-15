@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import { connect } from 'react-redux';
 import { getOneById } from '../../../redux/postsRedux';
 // import { reduxSelector, reduxActionCreator } from '../../../redux/exampleRedux.js';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import styles from './Post.module.scss';
 
@@ -26,6 +27,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import { makeStyles } from '@material-ui/core/styles';
 import { red } from '@material-ui/core/colors';
+import { Redirect } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,14 +44,20 @@ const useStyles = makeStyles((theme) => ({
 
 const Component = ({ className, children, post }) => {
   const classes = useStyles();
-  const [expanded, setExpanded] = React.useState(false);
+  const {
+    user,
+    isAuthenticated,
+    // isLoading,
+  } = useAuth0();
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
+
+  if(!post) {
+    return <Redirect to='/'/>;
+  }
+
   return (
     <div className={clsx(className, styles.root)}>
-      <Card key={post.id} className={classes.root}>
+      <Card className={classes.root}>
         <CardHeader
           avatar={
             <Avatar aria-label="recipe" className={classes.avatar}>
@@ -59,7 +67,9 @@ const Component = ({ className, children, post }) => {
           action={
             <div className={clsx(styles.priceSettings)}>
               <Typography variant="body1">{post.price}</Typography>
-              <MenuBtn postId={post.id} />
+              {isAuthenticated || user === 'admin' ? (
+                <MenuBtn postId={post._id}/>
+              ) : null}
             </div>
           }
           title={post.title}
@@ -77,15 +87,6 @@ const Component = ({ className, children, post }) => {
           </IconButton>
           <IconButton aria-label="share">
             <ShareIcon />
-          </IconButton>
-          <IconButton
-            className={clsx(classes.expand, {
-              [classes.expandOpen]: expanded,
-            })}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
-          >
           </IconButton>
         </CardActions>
 

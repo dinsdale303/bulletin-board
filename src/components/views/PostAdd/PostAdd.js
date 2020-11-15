@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 
 import clsx from 'clsx';
 
-// import { connect } from 'react-redux';
-// import { reduxSelector, reduxActionCreator } from '../../../redux/exampleRedux.js';
+import { connect } from 'react-redux';
+import { publishNewPost } from '../../../redux/postsRedux';
+import { withAuth0 } from '@auth0/auth0-react';
 
 import styles from './PostAdd.module.scss';
 
@@ -15,6 +16,7 @@ import {
   Avatar,
   CardContent,
   TextField,
+  Button,
 } from '@material-ui/core';
 import ImageUploader from 'react-images-upload';
 
@@ -26,7 +28,8 @@ class Component extends React.Component {
       email: '',
       content: '',
       outline: '',
-      phoneNr: '',
+      phone: '',
+      image: '',
       file: null,
     },
     error: null,
@@ -51,15 +54,17 @@ class Component extends React.Component {
   };
 
   render() {
+    const { user, isAuthenticated } = this.props.auth0;
     const classes = {};
     const { handleChange, setPhoto } = this;
     const {
+      image,
       title,
       email,
       price,
       content,
       outline,
-      phoneNr,
+      phone,
       file,
     } = this.state.post;
     return (
@@ -67,9 +72,11 @@ class Component extends React.Component {
         <Card className={classes.root}>
           <CardHeader
             avatar={
-              <Avatar aria-label="recipe" className={styles.avatar}>
-                R
-              </Avatar>
+              <Avatar
+                aria-label="recipe"
+                className={styles.avatar}
+                src={user.picture}
+              />
             }
             action={
               <div className={clsx(styles.priceSettings)}>
@@ -77,6 +84,7 @@ class Component extends React.Component {
                   label="Price"
                   value={price}
                   name="price"
+                  type="number"
                   size="small"
                   onChange={handleChange}
                 />
@@ -106,6 +114,14 @@ class Component extends React.Component {
           />
           <CardContent className={clsx(styles.cardContent)}>
             <TextField
+              label="Image URL"
+              size="small"
+              type="url"
+              value={image}
+              name="image"
+              onChange={handleChange}
+            />
+            <TextField
               label="Outline"
               size="small"
               value={outline}
@@ -123,23 +139,30 @@ class Component extends React.Component {
               name="content"
               onChange={handleChange}
             />
-            <Typography paragraph>author: {'this author'}</Typography>
+            <Typography paragraph>
+              author: {isAuthenticated ? user.name : null}
+            </Typography>
             <TextField
               label="e mail"
               size="small"
               value={email}
+              type="email"
               name="email"
               onChange={handleChange}
             />
             <TextField
               label="Phone nr"
               size="small"
-              value={phoneNr}
-              name="phoneNr"
+              value={phone}
+              name="phone"
+              type="tel"
               onChange={handleChange}
             />
           </CardContent>
         </Card>
+        <Button onClick={() => this.props.publish(this.state.post, user)}>
+          Publish post
+        </Button>
       </div>
     );
   }
@@ -148,20 +171,22 @@ class Component extends React.Component {
 Component.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
+  publish: PropTypes.func,
+  auth0: PropTypes.object,
 };
 
 // const mapStateToProps = state => ({
 //   someProp: reduxSelector(state),
 // });
 
-// const mapDispatchToProps = dispatch => ({
-//   someAction: arg => dispatch(reduxActionCreator(arg)),
-// });
+const mapDispatchToProps = (dispatch) => ({
+  publish: (newPost, user) => dispatch(publishNewPost({post: newPost, user: user})),
+});
 
-// const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
+const Container = withAuth0(connect(null, mapDispatchToProps)(Component));
 
 export {
-  Component as PostAdd,
-  // Container as PostAdd,
+  // Component as PostAdd,
+  Container as PostAdd,
   Component as PostAddComponent,
 };

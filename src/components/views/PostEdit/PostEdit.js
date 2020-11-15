@@ -26,6 +26,7 @@ class Component extends React.Component {
       title: this.props.post.title,
       price: this.props.post.price,
       email: this.props.post.email,
+      image: this.props.post.image,
       content: this.props.post.content,
       outline: this.props.post.outline,
       phoneNr: this.props.post.phoneNr,
@@ -62,6 +63,7 @@ class Component extends React.Component {
       content,
       outline,
       phoneNr,
+      image,
       file,
     } = this.state.post;
     return (
@@ -80,6 +82,7 @@ class Component extends React.Component {
                   value={price}
                   name="price"
                   size="small"
+                  type="number"
                   onChange={handleChange}
                 />
               </div>
@@ -111,6 +114,15 @@ class Component extends React.Component {
           )}
           <CardContent className={clsx(styles.cardContent)}>
             <TextField
+              label="Image"
+              size="small"
+              type="url"
+              value={image}
+              name="image"
+              onChange={handleChange}
+            />
+
+            <TextField
               label="Outline"
               size="small"
               value={outline}
@@ -133,6 +145,7 @@ class Component extends React.Component {
               label="e mail"
               size="small"
               value={email}
+              type="email"
               name="email"
               onChange={handleChange}
             />
@@ -140,6 +153,7 @@ class Component extends React.Component {
               label="Phone nr"
               size="small"
               value={phoneNr}
+              type="tel"
               name="phoneNr"
               onChange={handleChange}
             />
