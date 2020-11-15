@@ -8,12 +8,14 @@ import clsx from 'clsx';
 
 import styles from './{{pascalCase name}}.module.scss';
 
-const Component = ({className, children}) => (
-  <div className={clsx(className, styles.root)}>
-    <h2>{{pascalCase name}}</h2>
-    {children}
-  </div>
-);
+const Component = ({className, children}) => {
+  return(
+    <div className={clsx(className, styles.root)}>
+      <h2>{{pascalCase name}}</h2>
+      {children}
+    </div>
+  )
+};
 
 Component.propTypes = {
   children: PropTypes.node,

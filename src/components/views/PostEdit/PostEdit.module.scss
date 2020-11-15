@@ -1,4 +1,27 @@
 @import '../../../styles/settings.scss';
 
-// .root {
-// }
+.root {
+  display: flex;
+  flex-direction: column;
+  & > * {
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  & > * {
+    margin-bottom: 15px;
+  }
+}
+
+.media {
+  height: 0;
+  padding-top: 56.25%; // 16:9
+}
+
+.avatar {
+  background-color: red;
+}
